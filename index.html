@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart System</title>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+
+
+<body class="bg-gray-100 min-h-screen">
+    <!-- Alpine.js Version -->
+     <!-- Full-width section -->
+<div class="w-full bg-gray-100">
+    <div x-data="cartApp()" class=" mx-auto px-0 py-0">
+       
+       
+        <!-- Header with Cart Toggle -->
+         
+<header x-data="{ mobileMenuOpen: false }" class="w-full sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-md border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-3">
+    <!-- 🔹 Top Section -->
+    <div class="flex justify-between items-center">
+      
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer">
+        <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" class="w-9 h-9" alt="Logo" />
+        <h1 class="text-2xl font-extrabold text-gray-800">ShopHub</h1>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex-1 mx-6 relative hidden md:flex">
+        <input 
+          type="text" 
+          placeholder="Search for products..." 
+          class="w-full h-10 rounded-full border border-gray-300 pl-4 pr-14 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+        />
+        <button 
+  class="absolute right-0 top-0 h-full w-14 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-r-full flex justify-center items-center transition-all duration-300 shadow-sm hover:from-blue-600 hover:to-blue-700">
+  <i class="fas fa-search text-lg"></i>
+</button>
+
+      </div>
+
+      <!-- Icons -->
+      <div class="hidden md:flex items-center space-x-5">
+        <!-- Wishlist -->
+       <div class="relative">
+  <button class="text-gray-600 hover:text-pink-500 transition transform hover:scale-110 text-xl focus:outline-none" title="Wishlist">
+    <i class="fa-regular fa-heart"></i>
+  </button>
+
+  <!-- 🩷 Wishlist Count Badge -->
+  <span 
+    x-show="wishlistCount > 0"
+    x-text="wishlistCount"
+    class="absolute -top-1 -right-2 bg-pink-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+  </span>
+</div>
+
+
+        <!-- Cart -->
+        <button @click="toggleCart()" class="relative text-gray-600 hover:text-blue-600 transition transform hover:scale-110 text-xl focus:outline-none" title="Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span x-show="cartCount > 0" x-text="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"></span>
+        </button>
+
+        <!-- Sign In -->
+        <button class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold text-sm">
+          <i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
+        </button>
+      </div>
+
+      <!-- Hamburger Menu Button -->
+      <button @click="mobileMenuOpen = true" class="md:hidden text-gray-600 hover:text-blue-600 text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+        
+
+      </button>
+    </div>
+
+   <!-- 🔹 Navigation Links -->
+<nav class="relative z-50 mt-3 flex justify-center space-x-10 text-gray-700 font-medium border-t border-gray-200 pt-3 hidden md:flex">
+  <a href="#" class="relative group pb-1 text-blue-600 font-semibold">
+    Home
+    <span class="absolute left-0 bottom-0 h-[2px] bg-blue-600 w-full"></span>
+  </a>
+
+  <a href="#products-section" class="relative group pb-1 text-gray-700 hover:text-blue-600 transition-colors">
+    Shop
+    <span class="absolute left-0 bottom-0 h-[2px] bg-blue-600 w-0 transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#about-section" class="relative group pb-1 text-gray-700 hover:text-blue-600 transition-colors">
+    About
+    <span class="absolute left-0 bottom-0 h-[2px] bg-blue-600 w-0 transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#" class="relative group pb-1 text-gray-700 hover:text-blue-600 transition-colors">
+    Offers
+    <span class="absolute left-0 bottom-0 h-[2px] bg-blue-600 w-0 transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#footer-section" class="relative group pb-1 text-gray-700 hover:text-blue-600 transition-colors">
+    Contact
+    <span class="absolute left-0 bottom-0 h-[2px] bg-blue-600 w-0 transition-all duration-300 group-hover:w-full"></span>
+  </a>
+</nav>
+
+  </div>
+
+
+
+
+
+
+</header>
+
+
+
+
+
+
+<section class="relative text-center py-16 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white rounded-b-3xl shadow-lg mb-10 overflow-hidden hero-parallax">
+<h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3 animate-fadeIn">
+    Find Your Perfect Tech Gear 
+    <i class="fas fa-laptop-code ml-2 animate-icon"></i>
+</h2>
+
+<!-- Hero Tagline -->
+<div x-data="taglineAnimation()" class="text-sm sm:text-base md:text-lg opacity-90 mb-5 h-8 flex justify-center items-center overflow-hidden relative" style="font-family: 'Poppins', sans-serif;">
+  <template x-for="(tagline, index) in taglines" :key="index">
+    <span x-show="current === index"
+          x-transition:enter="transition transform duration-700"
+          x-transition:enter-start="translate-y-full opacity-0"
+          x-transition:enter-end="translate-y-0 opacity-100"
+          class="absolute text-sm sm:text-base md:text-lg font-medium"
+          x-text="tagline">
+    </span>
+  </template>
+</div>
+
+
+<script>
+  function taglineAnimation() {
+    return {
+      taglines: [
+        'Exclusive discounts on premium electronics',
+        'Upgrade your lifestyle with our tech offers',
+        'Special deals you can’t miss',
+        'Shop smart, shop stylish'
+      ],
+      current: 0,
+      init() {
+        setInterval(() => {
+          this.current = (this.current + 1) % this.taglines.length;
+        }, 3000);
+      }
+    }
+  }
+</script>
+
+
+
+  <button @click="scrollToProducts()" 
+          class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center space-x-2 hover:from-purple-500 hover:to-pink-500 mx-auto">
+    <span>Browse Products</span>
+    <i class="fas fa-arrow-right"></i>
+  </button>
+
+</section>
+
+<style>
+.hero-parallax {
+  background-image: url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1600&q=80');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+@keyframes iconPulse {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { transform: translateY(-5px) scale(1.1); opacity: 0.8; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.animate-icon {
+  display: inline-block;
+  animation: iconPulse 2s ease-in-out infinite;
+}
+</style>
+
+
+
+
+
+
+ 
+
+
+<!-- 🌟 Products Section -->
+<section id="products-section"  class="py-16 bg-gray-50 scroll-mt-20">
+  <div class="max-w-7xl mx-auto px-6">
+
+   
+
+ 
+
+    <!-- 🧩 Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+      <template x-for="product in products" :key="product.id">
+        <div
+          class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-blue-500 relative"
+        >
+          <!-- 🩷 Wishlist Heart -->
+          <button
+            @click="toggleWishlist(product)"
+            class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md hover:scale-110 transition-transform duration-200"
+          >
+            <i
+              class="fa-solid fa-heart text-2xl transition-all duration-300"
+              :class="product.isInWishlist ? 'text-pink-500' : 'text-gray-400'"
+            ></i>
+          </button>
+
+          <!-- 🔴 Sale Tag -->
+          <div
+            x-show="product.onSale"
+            class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded"
+          >
+            SALE
+          </div>
+
+          <!-- 🖼 Product Image -->
+          <div class="w-full h-48 rounded-xl mb-5 overflow-hidden flex items-center justify-center">
+            <img :src="product.image" alt="" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- 📜 Product Info -->
+          <h3 x-text="product.name" class="text-xl font-bold text-gray-800 mb-1"></h3>
+          <p x-text="product.description" class="text-gray-600 text-sm mb-2"></p>
+
+          <!-- ⭐ Ratings -->
+          <div class="flex items-center mb-3">
+            <template x-for="star in 5">
+              <svg
+                class="w-4 h-4 fill-current"
+                :class="star <= product.rating ? 'text-yellow-400' : 'text-gray-300'"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M10 15l-5.878 3.09L5.3 11.545 1 7.455l6.061-.879L10 1l2.939 5.576L19 7.455l-4.3 4.09 1.178 6.545z"
+                />
+              </svg>
+            </template>
+            <span x-text="product.rating + '/5'" class="ml-2 text-sm text-gray-600"></span>
+          </div>
+
+          <p x-text="'$' + product.price.toFixed(2)" class="text-2xl font-bold text-blue-600 mb-4"></p>
+
+          <!-- 🛒 Add to Cart Button -->
+          <div class="flex">
+            <button
+              @click="addToCart(product)"
+              :class="product.adding ? 'bg-green-500 hover:bg-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'"
+              class="flex-1 text-white py-2 rounded-xl font-semibold transition-all duration-300"
+            >
+              <span x-text="product.adding ? '✓ Added!' : ' Add to Cart'"></span>
+            </button>
+          </div>
+        </div>
+      </template>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- 💡 About Section -->
+<section id="about-section"  class="py-20 relative overflow-hidden scroll-mt-32">
+  <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+   
+    <!-- 🏷 About Heading -->
+    <h2 class="text-4xl font-extrabold text-blue-800 mb-6 animate-fadeIn delay-200" style="font-family: 'Poppins', sans-serif;">
+      About ShopHub
+    </h2>
+
+     <!-- ✨ Tagline -->
+    <p class="text-lg md:text-xl text-blue-700 font-semibold mb-4 animate-fadeIn">
+      Learn More About What We Believe In
+    </p>
+
+    <p class="text-gray-700 leading-relaxed text-lg animate-fadeIn delay-400" style="font-family: 'Roboto', sans-serif;">
+      At <span class="font-semibold text-blue-600">ShopHub</span>, we believe shopping should be an experience, not a task.
+      Our mission is to offer premium products, exclusive deals, and a seamless user journey.
+      With every click, we aim to bring joy 💙 and style to your lifestyle.
+    </p>
+  </div>
+
+  <!-- 🌈 Animated Background -->
+  <div class="absolute inset-0 bg-gradient-to-r from-white via-blue-100 to-blue-300 animate-gradientBackground"></div>
+</section>
+
+<!-- 🌟 Animation Styles -->
+<style>
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* Gradient background animation */
+@keyframes gradientBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradientBackground {
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
+}
+
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400&display=swap');
+</style>
+
+
+
+        <!-- Mini Cart -->
+        <div x-show="cartOpen" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="transform translate-x-full"
+             x-transition:enter-end="transform translate-x-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="transform translate-x-0"
+             x-transition:leave-end="transform translate-x-full"
+             class="fixed top-0 right-0 w-96 h-full bg-white shadow-2xl z-50 p-6 overflow-y-auto">
+            
+            <!-- Cart Header -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                <h2 class="text-2xl font-bold text-gray-800">Shopping Cart</h2>
+                <button @click="closeCart()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+
+          <!-- Cart Items -->
+<div x-show="cart.length === 0" class="text-center py-12">
+  <!-- 🧾 Replaced emoji with your logo -->
+  <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" 
+       alt="Empty Cart Logo" 
+       class="w-20 h-20 mx-auto mb-4 opacity-80">
+  <p class="text-gray-500 text-lg">Your cart is empty</p>
+</div>
+
+
+            <div x-show="cart.length > 0">
+                <template x-for="item in cart" :key="item.id">
+                    <div class="flex justify-between items-center bg-gray-50 rounded-xl p-4 mb-3">
+                        <div class="flex-1">
+                            <h4 x-text="item.name" class="font-semibold text-gray-800"></h4>
+                            <p x-text="'$' + item.price.toFixed(2)" class="text-blue-600 font-bold"></p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button @click="updateQuantity(item.id, item.quantity - 1)" class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">-</button>
+                            <span x-text="item.quantity" class="font-bold text-lg px-2"></span>
+                            <button @click="updateQuantity(item.id, item.quantity + 1)" class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">+</button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Cart Total -->
+                <div class="border-t pt-4 mt-6">
+                    <div class="flex justify-between items-center text-xl font-bold mb-4">
+                        <span>Total:</span>
+                        <span x-text="'$' + cartTotal.toFixed(2)" class="text-blue-600"></span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-1">
+                        Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div x-show="cartOpen" @click="closeCart()" class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    </div>
+
+    <!-- Vanilla JS Version (Hidden by default) -->
+    <div id="vanilla-cart" class="hidden container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Vanilla JS Version</h1>
+            <button id="cart-toggle" class="relative bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 font-semibold">
+                🛒 Cart
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 items-center justify-center text-xs font-bold hidden">0</span>
+            </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <!-- Products will be inserted here -->
+        </div>
+
+        <!-- Mini Cart -->
+        <div id="mini-cart" class="fixed top-0 right-0 w-96 h-full bg-white shadow-2xl z-50 p-6 overflow-y-auto transform translate-x-full transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                <h2 class="text-2xl font-bold text-gray-800">Shopping Cart</h2>
+                <button id="close-cart" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            <div id="cart-items">
+                <div id="empty-cart" class="text-center py-12">
+                    <div class="text-6xl mb-4">🛒</div>
+                    <p class="text-gray-500 text-lg">Your cart is empty</p>
+                </div>
+            </div>
+            <div id="cart-total" class="border-t pt-4 mt-6 hidden">
+                <div class="flex justify-between items-center text-xl font-bold mb-4">
+                    <span>Total:</span>
+                    <span id="total-amount" class="text-blue-600">$0.00</span>
+                </div>
+                <button class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-1">
+                    Checkout
+                </button>
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+    </div>
+
+   
+
+    <footer id="footer-section" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white mt-16">
+  <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+    
+    <!-- 🛍️ Brand Info -->
+    <div>
+      <h2 class="text-2xl font-bold mb-3 flex items-center space-x-2">
+        <i class="fa-solid fa-cart-shopping text-white"></i>
+        <span>ShopHub</span>
+      </h2>
+      <p class="text-gray-100 text-sm leading-relaxed mb-4">
+        Your one-stop destination for trendy fashion, tech, and lifestyle essentials. Quality you can trust, style you’ll love.
+      </p>
+      <div class="flex space-x-3 mt-4">
+        <a href="#" class="text-white hover:text-gray-200 text-lg"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-white hover:text-gray-200 text-lg"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="text-white hover:text-gray-200 text-lg"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-white hover:text-gray-200 text-lg"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+
+    <!-- 🧭 Quick Links -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4 border-b border-blue-400 inline-block pb-1">Quick Links</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-gray-200 transition">Home</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Shop</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Offers</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- 📦 Customer Support -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4 border-b border-blue-400 inline-block pb-1">Customer Care</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-gray-200 transition">FAQ</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Return Policy</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Track Order</a></li>
+        <li><a href="#" class="hover:text-gray-200 transition">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+    <!-- ✉️ Newsletter -->
+    <div>
+      <h3 class="text-xl font-semibold mb-4 border-b border-blue-400 inline-block pb-1">Stay Updated</h3>
+      <p class="text-sm mb-3 text-gray-100">Subscribe for exclusive offers and new arrivals.</p>
+      <div class="flex bg-white rounded-full overflow-hidden">
+        <input 
+          type="email" 
+          placeholder="Enter your email"
+          class="flex-1 px-4 py-2 text-gray-700 outline-none"
+        />
+        <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white font-semibold transition-all">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 🌙 Bottom Section -->
+  <div class="border-t border-blue-400 mt-10 py-4 text-center text-sm text-gray-100">
+    © 2025 <span class="font-semibold">ShopHub</span>. All rights reserved. | Designed by <span class="font-semibold">Priyanka 💙</span>
+  </div>
+</footer>
+
+
+    <script>
+  
+function cartApp() {
+    return {
+        cartOpen: false,
+        cart: [],
+        wishlist: [], // ✅ new array for wishlist
+    products: [
+    { id: 1, name: 'Wireless Headphones', price: 99.99, image: '/E-commerce-website/1.jpg', rating: 4, adding: false, onSale: true, isInWishlist: false },
+    { id: 2, name: 'Smart Watch', price: 199.99, image: '/E-commerce-website/2.jpg', description: 'Feature-rich smartwatch', rating: 5, adding: false, onSale: false, isInWishlist: false },
+    { id: 3, name: 'Bluetooth Speaker', price: 79.99, image: '/E-commerce-website/3.jpg', description: 'Portable wireless speaker', rating: 4, adding: false, onSale: false, isInWishlist: false },
+    { id: 4, name: 'Phone Case', price: 29.99, image: '/E-commerce-website/4.jpg', description: 'Protective phone case', rating: 3, adding: false, onSale: true, isInWishlist: false },
+    { id: 5, name: 'Charging Cable', price: 19.99, image: '/E-commerce-website/5.jpg', description: 'Fast charging cable', rating: 4, adding: false, onSale: false, isInWishlist: false },
+    { id: 6, name: 'Power Bank', price: 49.99, image: '/E-commerce-website/6.jpg', description: 'Portable power bank', rating: 5, adding: false, onSale: false, isInWishlist: false },
+    { id: 7, name: 'Laptop Stand', price: 39.99, image: '/E-commerce-website/7.jpg', description: 'Ergonomic laptop stand', rating: 4, adding: false, onSale: true, isInWishlist: false },
+    { id: 8, name: 'Webcam', price: 89.99, image: '/E-commerce-website/8.jpg', description: 'HD webcam for video calls', rating: 4, adding: false, onSale: false, isInWishlist: false },
+
+    // 👇 New 4 products added here
+    { id: 9, name: 'Gaming Mouse', price: 59.99, image: '/E-commerce-website/9.jpg', description: 'High precision RGB gaming mouse', rating: 5, adding: false, onSale: true, isInWishlist: false },
+    { id: 10, name: 'Mechanical Keyboard', price: 129.99, image: '/E-commerce-website/10.jpg', description: 'RGB backlit mechanical keyboard', rating: 5, adding: false, onSale: false, isInWishlist: false },
+    { id: 11, name: 'Noise Cancelling Earbuds', price: 149.99, image: '/E-commerce-website/11.jpg', description: 'Crystal-clear sound wireless earbuds', rating: 4, adding: false, onSale: true, isInWishlist: false },
+    { id: 12, name: 'Smart Lamp', price: 39.99, image: '/E-commerce-website/12.jpg', description: 'Voice controlled smart LED lamp', rating: 4, adding: false, onSale: false, isInWishlist: false }
+]
+,
+
+
+
+        // 🩷 Wishlist count
+        get wishlistCount() {
+            return this.wishlist.length;
+        },
+
+        // 🛒 Cart count
+        get cartCount() {
+            return this.cart.reduce((total, item) => total + item.quantity, 0);
+        },
+
+        get cartTotal() {
+            return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        },
+
+        addToCart(product) {
+            product.adding = true;
+            setTimeout(() => product.adding = false, 1000);
+
+            const existingItem = this.cart.find(item => item.id === product.id);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                this.cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+            }
+        },
+
+        // 🩷 Toggle Wishlist Logic
+        toggleWishlist(product) {
+            product.isInWishlist = !product.isInWishlist;
+
+            if (product.isInWishlist) {
+                this.wishlist.push(product);
+            } else {
+                this.wishlist = this.wishlist.filter(item => item.id !== product.id);
+            }
+        },
+
+        toggleCart() {
+            this.cartOpen = !this.cartOpen;
+        },
+
+        closeCart() {
+            this.cartOpen = false;
+        }
+    }
+}
+
+
+
+        // Vanilla JS Implementation
+        class VanillaCart {
+            constructor() {
+                this.cart = [];
+                this.products = [
+                    { id: 1, name: 'Gaming Mouse', price: 69.99 },
+                    { id: 2, name: 'Keyboard', price: 129.99 },
+                    { id: 3, name: 'Monitor', price: 299.99 },
+                    { id: 4, name: 'Webcam', price: 89.99 },
+                    { id: 5, name: 'Microphone', price: 149.99 },
+                    { id: 6, name: 'Desk Lamp', price: 39.99 }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.renderProducts();
+                this.bindEvents();
+            }
+
+            renderProducts() {
+                const container = document.getElementById('products-container');
+                container.innerHTML = '';
+
+                this.products.forEach(product => {
+                    const productHTML = `
+                        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-blue-500">
+                            <div class="w-full h-48 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl mb-5 flex items-center justify-center text-white font-bold text-lg">
+                                Product Image
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">${product.name}</h3>
+                            <p class="text-2xl font-bold text-blue-600 mb-5">$${product.price.toFixed(2)}</p>
+                            <button onclick="vanillaCart.addToCart(${product.id})" 
+                                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                                🛒 Add to Cart
+                            </button>
+                        </div>
+                    `;
+                    container.innerHTML += productHTML;
+                });
+            }
+
+            bindEvents() {
+                document.getElementById('cart-toggle').addEventListener('click', () => this.toggleCart());
+                document.getElementById('close-cart').addEventListener('click', () => this.closeCart());
+                document.getElementById('cart-overlay').addEventListener('click', () => this.closeCart());
+            }
+
+            toggleWishlist(product) {
+  product.isInWishlist = !product.isInWishlist;
+}
+
+
+            addToCart(productId) {
+                const product = this.products.find(p => p.id === productId);
+                const existingItem = this.cart.find(item => item.id === productId);
+
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    this.cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        quantity: 1
+                    });
+                }
+
+                this.updateCartUI();
+
+                
+            }
+
+            updateQuantity(productId, newQuantity) {
+                if (newQuantity <= 0) {
+                    this.cart = this.cart.filter(item => item.id !== productId);
+                } else {
+                    const item = this.cart.find(item => item.id === productId);
+                    if (item) {
+                        item.quantity = newQuantity;
+                    }
+                }
+                this.updateCartUI();
+            }
+
+            updateCartUI() {
+                // Update cart count
+                const cartCount = this.cart.reduce((total, item) => total + item.quantity, 0);
+                const countElement = document.getElementById('cart-count');
+                
+                if (cartCount > 0) {
+                    countElement.textContent = cartCount;
+                    countElement.classList.remove('hidden');
+                    countElement.classList.add('flex');
+                } else {
+                    countElement.classList.add('hidden');
+                    countElement.classList.remove('flex');
+                }
+
+                // Update cart items
+                this.renderCartItems();
+            }
+
+            renderCartItems() {
+                const cartItemsContainer = document.getElementById('cart-items');
+                const emptyCart = document.getElementById('empty-cart');
+                const cartTotal = document.getElementById('cart-total');
+
+                if (this.cart.length === 0) {
+                    emptyCart.classList.remove('hidden');
+                    cartTotal.classList.add('hidden');
+                    return;
+                }
+
+                emptyCart.classList.add('hidden');
+                cartTotal.classList.remove('hidden');
+
+                const cartItemsHTML = this.cart.map(item => `
+                    <div class="flex justify-between items-center bg-gray-50 rounded-xl p-4 mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-blue-600 font-bold">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="vanillaCart.updateQuantity(${item.id}, ${item.quantity - 1})" 
+                                    class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">-</button>
+                            <span class="font-bold text-lg px-2">${item.quantity}</span>
+                            <button onclick="vanillaCart.updateQuantity(${item.id}, ${item.quantity + 1})" 
+                                    class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">+</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Replace empty cart with items
+                cartItemsContainer.innerHTML = cartItemsHTML + cartTotal.outerHTML;
+
+                // Update total
+                const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                document.getElementById('total-amount').textContent = `$${total.toFixed(2)}`;
+            }
+
+            toggleCart() {
+                const miniCart = document.getElementById('mini-cart');
+                const overlay = document.getElementById('cart-overlay');
+                
+                miniCart.classList.toggle('translate-x-full');
+                overlay.classList.toggle('hidden');
+            }
+
+            closeCart() {
+                const miniCart = document.getElementById('mini-cart');
+                const overlay = document.getElementById('cart-overlay');
+                
+                miniCart.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Initialize Vanilla JS cart when needed
+        let vanillaCart;
+
+        // Toggle between versions
+        let currentVersion = 'alpine';
+        function toggleVersion() {
+            const alpineDiv = document.querySelector('[x-data="cartApp()"]');
+            const vanillaDiv = document.getElementById('vanilla-cart');
+            const versionText = document.getElementById('version-text');
+
+            if (currentVersion === 'alpine') {
+                alpineDiv.classList.add('hidden');
+                vanillaDiv.classList.remove('hidden');
+                versionText.textContent = 'Alpine.js';
+                currentVersion = 'vanilla';
+                
+                if (!vanillaCart) {
+                    vanillaCart = new VanillaCart();
+                }
+            } else {
+                alpineDiv.classList.remove('hidden');
+                vanillaDiv.classList.add('hidden');
+                versionText.textContent = 'Vanilla JS';
+                currentVersion = 'alpine';
+            }
+
+            
+        }
+
+        function scrollToProducts() {
+    document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+        
+    </script>
+</body>
+</html>
